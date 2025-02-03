@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  # Go application
+  app:
+    build: .
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      DB_HOST= ${DB_HOST}
+      DB_USER= ${DB_USER}
+      DB_PORT= ${DB_PORT}
+      DB_PASS= ${DB_PASS}
+      DB_NAME= ${DB_NAME}
+      SERVER_PORT= ${SERVER_PORT}
+      SET_MAX_IDLE_CONNS=30
+      SET_MAX_OPEN_CONNS=100
+      API_VERSION= ${API_VERSION}
+
+      # Default values: prefer
+      SSL_MODE= ${SSL_MODE}
+
+      API_VERSION= ${API_VERSION}
+      API_SECRET= ${API_SECRET}
+
+      SMTP_HOST= ${SMTP_HOST}
+      SMTP_PORT= ${SMTP_PORT}
+      SMTP_AUTH_EMAIL= ${SMTP_AUTH_EMAIL}
+      SMTP_AUTH_PASSWORD= ${SMTP_AUTH_PASSWORD}
+
+    depends_on:
+      - db
+
+  # PostgreSQL service
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

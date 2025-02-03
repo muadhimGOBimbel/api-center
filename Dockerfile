@@ -1,7 +1,10 @@
+# Use Golang image to build the app
 FROM golang:1.22.2-alpine AS builder
 
+# Set the working directory inside the container
 WORKDIR /app
 
+# Copy the Go source code
 COPY . .
 
 RUN go mod download \
@@ -17,5 +20,8 @@ WORKDIR /app
 COPY --from=builder --chown=appuser:appuser ./app/main /app/main
 
 USER appuser
+
+# Expose the port your Go app runs on
+EXPOSE 8080
 
 CMD [ "main" ]
